@@ -1,0 +1,17 @@
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# 中间输出文件
+*.jpg
+*.png
+*.csv
+
+# 系统文件
+.DS_Store
