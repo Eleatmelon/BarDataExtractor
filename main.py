@@ -6,9 +6,10 @@ import matplotlib
 matplotlib.use('Agg')  # 设置为非交互式后端，不会显示窗口
 from pathlib import Path  # 添加此行导入Path类
 
-from image_axis_reader import get_axis_coordinates
-from corp import detect_horizontal_lines, show_results
-from bar_analyzer import analyze_stacked_bars
+# 延迟导入这些模块，避免在输入验证前初始化API客户端
+# from image_axis_reader import get_axis_coordinates
+# from corp import detect_horizontal_lines, show_results
+# from bar_analyzer import analyze_stacked_bars
 
 # 配置文件和加密相关设置
 CONFIG_DIR = Path.home() / '.image_analyzer'
@@ -38,6 +39,25 @@ def main():
     if not os.path.exists(image_path):
         print(f"错误：文件 {image_path} 不存在")
         sys.exit(1)
+    
+    # 检查是否为文件夹
+    if os.path.isdir(image_path):
+        print(f"错误：输入路径 {image_path} 是一个文件夹，本程序只接受单个图像文件")
+        print("如需处理文件夹中的多个图像，请使用 run_no_intermediate.py 脚本")
+        sys.exit(1)
+    
+    # 检查是否为支持的图像格式
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tif', '.tiff']
+    file_extension = os.path.splitext(image_path)[1].lower()
+    if file_extension not in valid_extensions:
+        print(f"错误：文件 {image_path} 不是支持的图像格式")
+        print(f"支持的格式包括: {', '.join(valid_extensions)}")
+        sys.exit(1)
+    
+    # 在验证输入有效后，再导入需要API密钥的模块
+    from image_axis_reader import get_axis_coordinates
+    from corp import detect_horizontal_lines, show_results
+    from bar_analyzer import analyze_stacked_bars
     
     print(f"正在处理图像：{image_path}")
     
