@@ -36,16 +36,11 @@ def process_single_image(image_path, x_max=None, y_max=None, output_dir=None, sk
     # 构建预期的CSV文件路径
     base_name = os.path.basename(image_path)
     file_name_without_ext = os.path.splitext(base_name)[0]
-    # 检查两种可能的CSV文件名格式
     csv_file_path_1 = os.path.join(output_dir, f"{file_name_without_ext}_method_1_bar_analysis.csv")
     csv_file_path_2 = os.path.join(output_dir, f"{file_name_without_ext}_method_2_bar_analysis.csv")
-    # 如果任一文件存在，则认为已处理过
-    csv_file_path = None
-    if os.path.exists(csv_file_path_1) or os.path.exists(csv_file_path_2):
-        csv_file_path = csv_file_path_1 if os.path.exists(csv_file_path_1) else csv_file_path_2
     
     # 检查CSV文件是否已存在
-    if skip_existing and os.path.exists(csv_file_path):
+    if skip_existing and (os.path.exists(csv_file_path_1) or os.path.exists(csv_file_path_2)):
         print(f"跳过处理：{base_name} - 已存在对应的CSV文件")
         return True
     
@@ -135,9 +130,10 @@ def process_folder(folder_path, x_max=None, y_max=None, output_dir=None, extensi
         # 检查是否需要跳过已存在的文件
         base_name = os.path.basename(image_path)
         file_name_without_ext = os.path.splitext(base_name)[0]
-        csv_file_path = os.path.join(output_dir, f"{file_name_without_ext}_bar_analysis.csv")
+        csv_file_path_1 = os.path.join(output_dir, f"{file_name_without_ext}_method_1_bar_analysis.csv")
+        csv_file_path_2 = os.path.join(output_dir, f"{file_name_without_ext}_method_2_bar_analysis.csv")
         
-        if skip_existing and os.path.exists(csv_file_path):
+        if skip_existing and (os.path.exists(csv_file_path_1) or os.path.exists(csv_file_path_2)):
             print(f"跳过处理：{base_name} - 已存在对应的CSV文件")
             skipped_count += 1
             success_count += 1
